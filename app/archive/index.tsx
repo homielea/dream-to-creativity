@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 import { SeedCard } from '../../src/components/SeedCard';
 import { Body, Screen } from '../../src/components/ui';
-import { keptCountForSeed, useSeedsStore } from '../../src/store/seedsStore';
+import { useSeedsStore } from '../../src/store/seedsStore';
 import { radius, spacing } from '../../src/theme/typography';
 import { useDayTheme } from '../../src/theme/useTheme';
 
@@ -13,10 +13,10 @@ export default function Archive() {
   const { palette } = useDayTheme();
   const seeds = useSeedsStore((s) => s.seeds);
   const captures = useSeedsStore((s) => s.captures);
-  const keptCounts = useSeedsStore((s) =>
-    Object.fromEntries(s.seeds.map((seed) => [seed.id, keptCountForSeed(s, seed.id)]))
-  );
   const [query, setQuery] = useState('');
+
+  const keptCount = (seedId: string): number =>
+    captures.filter((c) => c.seedId === seedId && c.keep === 'kept').length;
 
   const q = query.trim().toLowerCase();
   const matches = (seedId: string, title: string, problem: string): boolean => {
@@ -51,7 +51,7 @@ export default function Archive() {
         <SeedCard
           key={seed.id}
           seed={seed}
-          keptCount={keptCounts[seed.id] ?? 0}
+          keptCount={keptCount(seed.id)}
           onPress={() => router.push(`/seed/${seed.id}`)}
         />
       ))}

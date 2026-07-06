@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { StyleSheet } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { FragmentItem } from '../../src/components/FragmentItem';
 import { Body, Button, Caption, Card, Screen, Title } from '../../src/components/ui';
 import {
@@ -16,7 +17,7 @@ import { spacing } from '../../src/theme/typography';
 export default function SeedDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const seed = useSeedsStore((s) => s.seeds.find((x) => x.id === id) ?? null);
-  const captures = useSeedsStore((s) => (id ? capturesForSeed(s, id) : []));
+  const captures = useSeedsStore(useShallow((s) => (id ? capturesForSeed(s, id) : [])));
   const digest = useSeedsStore((s) => (id ? digestForSeed(s, id) : null));
   const setCaptureKeep = useSeedsStore((s) => s.setCaptureKeep);
   const archiveSeed = useSeedsStore((s) => s.archiveSeed);

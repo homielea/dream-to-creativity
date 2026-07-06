@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { FragmentItem } from '../../src/components/FragmentItem';
 import { Body, Button, Caption, Card, Screen, Title } from '../../src/components/ui';
 import { proxyConfigured } from '../../src/lib/proxy';
@@ -17,7 +18,9 @@ import { spacing } from '../../src/theme/typography';
 export default function DigestScreen() {
   const { seedId } = useLocalSearchParams<{ seedId: string }>();
   const seed = useSeedsStore((s) => s.seeds.find((x) => x.id === seedId) ?? null);
-  const captures = useSeedsStore((s) => (seedId ? capturesForSeed(s, seedId) : []));
+  const captures = useSeedsStore(
+    useShallow((s) => (seedId ? capturesForSeed(s, seedId) : []))
+  );
   const digest = useSeedsStore((s) => (seedId ? digestForSeed(s, seedId) : null));
   const generateDigest = useSeedsStore((s) => s.generateDigest);
   const setFragmentKeep = useSeedsStore((s) => s.setFragmentKeep);
