@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { generateDigestForSeed } from '../lib/digest';
 import { newId, nowISO } from '../lib/id';
 import { zustandStorage } from '../lib/storage';
 import {
@@ -24,6 +25,8 @@ interface SeedsState {
   // Persists the audio reference immediately; transcript filled later.
   addCapture: (seedId: ID, audioUri: string, durationMs: number) => Capture;
   attachTranscript: (captureId: ID, transcript: Transcript) => void;
+  // Calls the proxy; falls back to raw transcripts if offline. Never deletes captures.
+  generateDigest: (seedId: ID) => Promise<Digest>;
   saveDigest: (digest: Digest) => void;
   setCaptureKeep: (captureId: ID, keep: KeepState) => void;
   setFragmentKeep: (digestId: ID, captureId: ID, keep: KeepState) => void;
@@ -97,6 +100,18 @@ export const useSeedsStore = create<SeedsState>()(
             c.id === captureId ? { ...c, transcript } : c
           ),
         })),
+
+      generateDigest: async (seedId) => {
+        const state = get();
+        const seed = state.seeds.find((s) => s.id === seedId);
+        if (!seed) throw new Error(`unknown seed: ${seedId}`);
+        const { digest } = await generateDigestForSeed(
+          seed,
+          capturesForSeed(state, seedId)
+        );
+        get().saveDigest(digest);
+        return digest;
+      },
 
       saveDigest: (digest) =>
         set((s) => ({
