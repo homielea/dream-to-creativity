@@ -36,6 +36,7 @@ export default function CaptureScreen() {
   const [permissionDenied, setPermissionDenied] = useState(false);
   const stopping = useRef(false);
   const maxTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const startedAt = useRef(0); // wall clock — some platforms report currentTime as 0
 
   // Audio mode + permission. Recording must start instantly on tap, so all
   // slow setup happens once, up front.
@@ -94,7 +95,10 @@ export default function CaptureScreen() {
     stopping.current = true;
     if (maxTimer.current) clearTimeout(maxTimer.current);
     try {
-      const durationMs = Math.round(recorder.currentTime * 1000);
+      const durationMs = Math.max(
+        Math.round(recorder.currentTime * 1000),
+        startedAt.current > 0 ? Date.now() - startedAt.current : 0
+      );
       await recorder.stop();
       const tempUri = recorder.uri;
       if (tempUri && activeSeedId) {
@@ -124,6 +128,7 @@ export default function CaptureScreen() {
       return;
     }
     recorder.record();
+    startedAt.current = Date.now();
     setIsRecording(true);
     maxTimer.current = setTimeout(() => void stopAndPersist(), MAX_RECORDING_MS);
     if (confirmHaptic && Platform.OS !== 'web') {
