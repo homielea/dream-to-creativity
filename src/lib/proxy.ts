@@ -7,6 +7,12 @@ import { newId, nowISO } from './id';
 // — raw audio and raw transcripts are always retained locally.
 
 const PROXY_BASE_URL: string | undefined = process.env.EXPO_PUBLIC_PROXY_URL;
+// Optional shared secret matching the proxy's PROXY_TOKEN. A build-time
+// env var, so it is a rotation handle, not a secret vault.
+const PROXY_TOKEN: string | undefined = process.env.EXPO_PUBLIC_PROXY_TOKEN;
+const authHeaders: Record<string, string> = PROXY_TOKEN
+  ? { Authorization: `Bearer ${PROXY_TOKEN}` }
+  : {};
 
 export function proxyConfigured(): boolean {
   return typeof PROXY_BASE_URL === 'string' && PROXY_BASE_URL.length > 0;
@@ -27,7 +33,7 @@ export async function requestDigest(
   if (!PROXY_BASE_URL) throw new Error('proxy not configured');
   const res = await fetch(`${PROXY_BASE_URL}/digest`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeaders },
     // Only what's needed: seed text + transcript text. Never raw audio here.
     body: JSON.stringify({
       seed: { title: seed.title, problem: seed.problem },

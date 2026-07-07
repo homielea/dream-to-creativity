@@ -15,6 +15,12 @@ import { nowISO } from './id';
 //   opted in AND a proxy URL is configured.
 
 const PROXY_BASE_URL: string | undefined = process.env.EXPO_PUBLIC_PROXY_URL;
+// Optional shared secret matching the proxy's PROXY_TOKEN. A build-time
+// env var, so it is a rotation handle, not a secret vault.
+const PROXY_TOKEN: string | undefined = process.env.EXPO_PUBLIC_PROXY_TOKEN;
+const authHeaders: Record<string, string> = PROXY_TOKEN
+  ? { Authorization: `Bearer ${PROXY_TOKEN}` }
+  : {};
 
 export interface TranscriptionRequest {
   captureId: string;
@@ -55,6 +61,7 @@ async function transcribeViaProxy(
   }
   const res = await fetch(`${PROXY_BASE_URL}/transcribe`, {
     method: 'POST',
+    headers: authHeaders,
     body: form,
   });
   if (!res.ok) return null;
