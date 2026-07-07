@@ -98,3 +98,18 @@ npm install
 npx expo start          # run the app (Expo Go / dev client)
 npx tsc --noEmit        # type-check — must pass before any ticket is done
 ```
+
+## End-to-end verification
+
+The browser journey that verified this app during development is committed,
+not ephemeral. With the app running on web:
+
+```bash
+npx expo start --web --port 8091   # terminal 1
+npm run e2e                          # terminal 2
+```
+
+`e2e/verify.mjs` drives the full first-run journey in a real browser and
+asserts the product's promises, not just that screens render. `PORT`
+overrides the port; `PW_CHROMIUM` points at a chromium binary when
+playwright's own download isn't available.
