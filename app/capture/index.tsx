@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   // A whisper in the corner — far outside the capture path, tiny by design;
   // the capture surface itself remains the entire rest of the screen.
   leave: {
-    color: '#2E3038',
+    color: night.text,
     textAlign: 'center',
     paddingVertical: spacing.sm,
   },

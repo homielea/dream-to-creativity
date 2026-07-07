@@ -8,7 +8,7 @@ export const night = {
   accentFill: '#5A1F1F', // dim red fill
   pulse: '#B0553A', // faint amber recording indicator
   ember: '#8A6A3B', // secondary warm accent
-  text: '#5C5F6B', // dim, sparing text on near-black
+  text: '#8B8FA0', // dim, sparing text on near-black — the floor is 4.5:1; dimmer than this and half-asleep eyes lose the exit
 };
 
 export const day = {

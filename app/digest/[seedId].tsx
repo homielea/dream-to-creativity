@@ -69,7 +69,7 @@ export default function DigestScreen() {
         <Caption style={styles.offline}>
           {proxyConfigured()
             ? 'The summary is unavailable right now. Your fragments and audio are all here; regenerate any time.'
-            : 'No summary service is set up. Your fragments and audio are all here; regenerate once it is.'}
+            : 'Your fragments and audio are all here, safe. A cleaned-up morning summary arrives once this app is connected to its companion service.'}
         </Caption>
       )}
 
@@ -92,7 +92,7 @@ export default function DigestScreen() {
         <Body soft>No fragments for this seed yet. The night is still ahead of you.</Body>
       )}
 
-      {digest && captures.length > 0 && (
+      {digest && captures.length > 0 && proxyConfigured() && (
         <Button
           label="Regenerate digest"
           kind="ghost"

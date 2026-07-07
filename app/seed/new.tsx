@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
   },
   ritualHint: { color: '#C9C2AE', textAlign: 'center', marginBottom: spacing.lg },
   ritualHintDim: { color: night.text },
-  ritualText: { color: '#A8A290', textAlign: 'center' },
+  ritualText: { color: '#BEB7A0', textAlign: 'center' },
   ritualTextDim: { color: '#6E6A5E' },
   ritualSpacer: { height: spacing.xl * 2 },
-  ritualAdvance: { color: '#57544A', padding: spacing.md },
+  ritualAdvance: { color: '#BEB7A0', padding: spacing.md, textDecorationLine: 'underline' },
 });
